@@ -1,0 +1,70 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply plugin: 'idea'
+
+group 'story.tracker'
+version '0.0.1'
+mainClassName = "io.ktor.server.netty.EngineMain"
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['resources']
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://kotlin.bintray.com/ktor' }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "org.kodein.di:kodein-di-framework-ktor-server-jvm:7.0.0"
+    implementation 'junit:junit:4.12'
+//    testImplementation 'junit:junit:4.12'// kodein for ktor
+    implementation "io.mockk:mockk:1.10.4"
+    implementation "io.ktor:ktor-server-tests:$ktor_version" // test framework
+
+//    testImplementation "org.mockito:mockito-core:2.24.5"
+//    testImplementation 'org.mockito:mockito-core:2.19.0'
+//    testCompile "org.mockito:mockito-core:2.8.9"
+
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version" // default kotlin
+//    implementation "io.ktor:ktor-server-netty:$ktor_version" //netty server for ktor
+//    implementation "ch.qos.logback:logback-classic:$logback_version" //loggin
+////    implementation "io.ktor:ktor-server-core:$ktor_version" // ktor server
+//    implementation "io.ktor:ktor-gson:$ktor_version" // gson for ktor
+//    implementation "org.kodein.di:kodein-di-framework-ktor-server-jvm:7.0.0" // kodein for ktor
+//
+//    // Exposed ORM library
+////    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+////    implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
+////    implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+//
+////    implementation "com.zaxxer:HikariCP:3.4.5" // JDBC Connection Pool
+////    implementation "org.postgresql:postgresql:42.2.1" // JDBC Connector for PostgreSQL
+////
+//
+}
