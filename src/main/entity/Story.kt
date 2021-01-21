@@ -2,7 +2,7 @@ package main.entity
 
 data class Story (
     val id: Int,
-    val title: String,
-    val description: String,
-    val assignedTo: String
+    var title: String,
+    var description: String,
+    var assignedTo: String
 )

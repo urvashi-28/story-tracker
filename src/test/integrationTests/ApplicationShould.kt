@@ -1,20 +1,23 @@
 package test.integrationTests
 
-import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import junit.framework.Assert.assertEquals
 import main.entity.Story
 import main.main
 import org.junit.Test
-import java.io.BufferedReader
-import java.io.File
+import org.litote.kmongo.KMongo
+import org.litote.kmongo.eq
+import org.litote.kmongo.getCollection
 
 class ApplicationShould {
+    private val mongoConnectionString = "mongodb+srv://admin:admin@cluster0.jddkh.mongodb.net/test"
+    private val databaseName = "story-tracker"
+    private val collectionName = "stories"
 
-    private val filePath = "src/main/db/db.json"
-    private var gson = Gson()
-    private val file= File(filePath)
+    private val client = KMongo.createClient(mongoConnectionString)
+    private val database = client.getDatabase(databaseName)
+    private val col = database.getCollection<Story>(collectionName)
 
     private val writeStory = "{\"id\":6,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\"}"
     private val readStory = "{\"id\":7,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\"}"
@@ -45,11 +48,6 @@ class ApplicationShould {
 
     private fun dataCleanup()
     {
-        val bufferedReader: BufferedReader = file.bufferedReader()
-        val inputString = bufferedReader.use { it.readText() }
-        var storyList =  gson.fromJson(inputString, Array<Story>::class.java).toMutableList()
-        storyList.removeAll { it.id == 6 }
-        var jsonString:String = gson.toJson(storyList)
-        file.writeText(jsonString)
+        col.findOneAndDelete(Story::id eq 6)
     }
 }

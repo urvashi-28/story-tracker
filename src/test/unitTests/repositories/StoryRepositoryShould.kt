@@ -1,6 +1,5 @@
 package test.unitTests.repositories
 
-import com.google.gson.Gson
 import main.entity.Story
 import main.repositories.StoryRepository
 import org.junit.After
@@ -8,27 +7,28 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.io.BufferedReader
-import java.io.File
+import org.litote.kmongo.KMongo
+import org.litote.kmongo.eq
+import org.litote.kmongo.getCollection
 
 
 class StoryRepositoryShould {
+    private val mongoConnectionString = "mongodb+srv://admin:admin@cluster0.jddkh.mongodb.net/test"
+    private val databaseName = "story-tracker"
+    private val collectionName = "stories"
 
-    private val filePath = "src/test/db/db.json"
-    private var gson = Gson()
-    private val file= File(filePath)
+    private val client = KMongo.createClient(mongoConnectionString)
+    private val database = client.getDatabase(databaseName)
+    private val col = database.getCollection<Story>(collectionName)
 
-    private val storyRepository = StoryRepository(filePath)
-    private val story1Expected = Story(1, "StoryTitle", "Description", "Assigned To")
-    private val story2Expected = Story(2, "StoryTitle", "Description", "Assigned To")
+    private val storyRepository = StoryRepository(mongoConnectionString, databaseName, collectionName)
+    private val story1Expected = Story(1111, "StoryTitle", "Description", "Assigned To")
+    private val story2Expected = Story(2222, "StoryTitle", "Description", "Assigned To")
 
     @Before
     fun setup()
     {
-        var stories = mutableListOf<Story>()
-        stories.add(story2Expected)
-        var jsonString:String = gson.toJson(stories)
-        file.writeText(jsonString)
+        col.insertOne(story2Expected)
     }
 
     @Test
@@ -37,6 +37,26 @@ class StoryRepositoryShould {
         assertEquals(storyRepository.writeStoryDetails(story1Expected), "Story Added")
         val storyAdded = getStoryByStoryId(story1Expected.id)
         assertEquals(story1Expected, storyAdded)
+    }
+
+    @Test
+    fun `update Story Details When Update Story Details Is Called`()
+    {
+        storyRepository.writeStoryDetails(story1Expected)
+        story1Expected.description = "new description"
+        assertEquals(storyRepository.updateStoryDetails(story1Expected), "Story Updated")
+        val storyAdded = getStoryByStoryId(story1Expected.id)
+        assertEquals(story1Expected, storyAdded)
+    }
+
+    @Test
+    fun `update Story Assignment When Update Story Assignment Is Called`()
+    {
+        storyRepository.writeStoryDetails(story1Expected)
+        story1Expected.assignedTo = "new assign"
+        assertEquals(storyRepository.updateStoryAssignment(story1Expected.id, story1Expected.assignedTo), "AssignedTo updated in Story")
+        val storyAdded = getStoryByStoryId(story1Expected.id)
+        assertEquals(story1Expected.assignedTo, "new assign")
     }
 
     @Test
@@ -57,21 +77,16 @@ class StoryRepositoryShould {
     @After
     fun teardown()
     {
-        var jsonString:String = gson.toJson(listOf<Story>())
-        file.writeText(jsonString)
+        col.findOneAndDelete(Story::id eq story1Expected.id)
+        col.findOneAndDelete(Story::id eq story2Expected.id)
     }
 
     private fun getStoryByStoryId(id: Int): Story?
     {
-        val bufferedReader: BufferedReader = file.bufferedReader()
-        val inputString = bufferedReader.use { it.readText() }
-        val stories = gson.fromJson(inputString, Array<Story>::class.java).toMutableList()
+        val story = col.find(Story::id eq id).first()
+        if(story != null)
+            return story
 
-        for (story in stories)
-        {
-            if(story.id == id)
-                return story
-        }
         return null
     }
 }
