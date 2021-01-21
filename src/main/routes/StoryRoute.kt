@@ -25,6 +25,28 @@ fun Route.story(dependencies: DirectDI) {
         }
     }
 
+    patch("/story") {
+        try {
+            val storyDetails = call.receive<Story>()
+            val message = storyService.updateStory(storyDetails)
+
+            call.respond(message)
+        } catch (e: Exception) {
+            call.respond(e)
+        }
+    }
+
+    patch("/story/assignTo") {
+        try {
+            val storyDetails = call.receive<Story>()
+            val message = storyService.updateStoryAssignment(storyDetails.id, storyDetails.assignedTo)
+
+            call.respond(message)
+        } catch (e: Exception) {
+            call.respond(e)
+        }
+    }
+
     get("/story/{storyId}") {
         try {
             val id = call.parameters.get("storyId")!!.toInt()

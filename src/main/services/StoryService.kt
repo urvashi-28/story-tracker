@@ -12,4 +12,12 @@ class StoryService(private val storyRepository: StoryRepository){
     fun addStory(story: Story): String {
         return storyRepository.writeStoryDetails(story)
     }
+
+    fun updateStory(story: Story): String {
+        return storyRepository.updateStoryDetails(story)
+    }
+
+    fun updateStoryAssignment(storyId: Int, assignTo: String): String {
+        return storyRepository.updateStoryAssignment(storyId, assignTo)
+    }
 }

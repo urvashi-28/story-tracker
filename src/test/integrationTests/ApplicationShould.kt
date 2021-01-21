@@ -5,7 +5,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import junit.framework.Assert.assertEquals
 import main.entity.Story
-import main.module
+import main.main
 import org.junit.Test
 import java.io.BufferedReader
 import java.io.File
@@ -21,7 +21,7 @@ class ApplicationShould {
 
     @Test
     fun returnExpectedStory() {
-        withTestApplication({ module(testing = true) }) {
+        withTestApplication({ main(testing = true) }) {
             handleRequest(HttpMethod.Get, "/api/v1/story/7").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(readStory, response.content)
@@ -32,7 +32,7 @@ class ApplicationShould {
     @Test
     fun addStoryPassedToEndpoint() {
         dataCleanup()
-        withTestApplication({ module(testing = true) }) {
+        withTestApplication({ main(testing = true) }) {
             handleRequest(HttpMethod.Post, "/api/v1/story"){
                 addHeader(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                 setBody(writeStory)
