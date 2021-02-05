@@ -16,8 +16,14 @@ fun Route.story(dependencies: DirectDI) {
 
     post("/story") {
         try {
+            var message : String = ""
             val storyDetails = call.receive<Story>()
-            val message = storyService.addStory(storyDetails)
+            val story = storyService.getStory(storyDetails.id)
+            message = if (story === null) {
+                storyService.addStory(storyDetails)
+            } else{
+                storyService.updateStory(storyDetails)
+            }
 
             call.respond(message)
         } catch (e: Exception) {
@@ -25,21 +31,32 @@ fun Route.story(dependencies: DirectDI) {
         }
     }
 
-    patch("/story") {
-        try {
-            val storyDetails = call.receive<Story>()
-            val message = storyService.updateStory(storyDetails)
+//    post("/story") {
+//        try {
+//            val storyDetails = call.receive<Story>()
+//            val message = storyService.updateStory(storyDetails)
+//
+//            call.respond(message)
+//        } catch (e: Exception) {
+//            call.respond(e)
+//        }
+//    }
 
-            call.respond(message)
-        } catch (e: Exception) {
-            call.respond(e)
-        }
-    }
-
-    patch("/story/assignTo") {
+    post("/story/assignTo") {
         try {
             val storyDetails = call.receive<Story>()
             val message = storyService.updateStoryAssignment(storyDetails.id, storyDetails.assignedTo)
+
+            call.respond(message)
+        } catch (e: Exception) {
+            call.respond(e)
+        }
+    }
+
+    post("/story/status") {
+        try {
+            val storyDetails = call.receive<Story>()
+            val message = storyService.updateStoryStatus(storyDetails.id, storyDetails.status)
 
             call.respond(message)
         } catch (e: Exception) {
@@ -54,6 +71,21 @@ fun Route.story(dependencies: DirectDI) {
 
             if (story == null) {
                 call.respond("Not Found")
+            } else {
+                call.respond(story)
+            }
+        } catch (e: Exception) {
+            call.respond(e)
+        }
+    }
+
+    get("/story") {
+        try {
+//            val id = call.parameters.get("storyId")!!.toInt()
+            val story = storyService.getAllStories()
+
+            if (story == null) {
+                call.respond("No story Found")
             } else {
                 call.respond(story)
             }

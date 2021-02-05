@@ -19,8 +19,8 @@ class ApplicationShould {
     private val database = client.getDatabase(databaseName)
     private val col = database.getCollection<Story>(collectionName)
 
-    private val writeStory = "{\"id\":6,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\"}"
-    private val readStory = "{\"id\":7,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\"}"
+    private val writeStory = "{\"id\":6,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\",\"status\":\"Backlog\"}"
+    private val readStory = "{\"id\":7,\"title\":\"title\",\"description\":\"description\",\"assignedTo\":\"assignedTo\",\"status\":\"Backlog\"}"
 
     @Test
     fun returnExpectedStory() {

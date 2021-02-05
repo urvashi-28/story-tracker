@@ -9,12 +9,20 @@ class StoryService(private val storyRepository: StoryRepository){
         return storyRepository.readStoryDetails(id)
     }
 
+    fun getAllStories(): List<Story> {
+        return storyRepository.readAllStories()
+    }
+
     fun addStory(story: Story): String {
         return storyRepository.writeStoryDetails(story)
     }
 
     fun updateStory(story: Story): String {
         return storyRepository.updateStoryDetails(story)
+    }
+
+    fun updateStoryStatus(storyId: Int, status: String): String {
+        return storyRepository.updateStoryStatus(storyId, status)
     }
 
     fun updateStoryAssignment(storyId: Int, assignTo: String): String {

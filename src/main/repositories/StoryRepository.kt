@@ -30,7 +30,8 @@ class StoryRepository {
         col.updateOne(Story::id eq story.id, set(
             Story::assignedTo setTo story.assignedTo,
             Story::title setTo story.title,
-            Story::description setTo story.description
+            Story::description setTo story.description,
+            Story::status setTo story.status
         ))
 
         return "Story Updated"
@@ -44,6 +45,14 @@ class StoryRepository {
         return "AssignedTo updated in Story"
     }
 
+    fun updateStoryStatus(storyId: Int, status: String): String
+    {
+//        val story : Story = col.findOne(Story::id eq storyId) ?: return "story does not exist"
+        col.updateOne(Story::id eq storyId, setValue(Story::status, status))
+
+        return "Status updated in Story"
+    }
+
     fun readStoryDetails(id: Int): Story?
     {
         val story : Story? = col.findOne(Story::id eq id)
@@ -53,5 +62,16 @@ class StoryRepository {
         }
 
         return null
+    }
+
+    fun readAllStories(): List<Story>
+    {
+        val story : List<Story> = col.find().toList()
+        if (story != null)
+        {
+            return story
+        }
+
+        return listOf<Story>()
     }
 }

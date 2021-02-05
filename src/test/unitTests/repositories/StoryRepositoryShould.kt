@@ -22,8 +22,8 @@ class StoryRepositoryShould {
     private val col = database.getCollection<Story>(collectionName)
 
     private val storyRepository = StoryRepository(mongoConnectionString, databaseName, collectionName)
-    private val story1Expected = Story(1111, "StoryTitle", "Description", "Assigned To")
-    private val story2Expected = Story(2222, "StoryTitle", "Description", "Assigned To")
+    private val story1Expected = Story(1111, "StoryTitle", "Description", "Assigned To", "Backlog")
+    private val story2Expected = Story(2222, "StoryTitle", "Description", "Assigned To", "Backlog")
 
     @Before
     fun setup()

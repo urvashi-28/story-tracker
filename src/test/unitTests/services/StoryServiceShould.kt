@@ -19,7 +19,7 @@ class StoryServiceShould {
     {
         storyRepositoryMock = mockk<StoryRepository>(relaxed = true)
         storyService = StoryService(storyRepositoryMock)
-        story = Story(1, "title", "desc", "assigned to")
+        story = Story(1, "title", "desc", "assigned to", "Backlog")
     }
 
     @Test

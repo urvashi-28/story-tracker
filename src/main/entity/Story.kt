@@ -4,5 +4,6 @@ data class Story (
     val id: Int,
     var title: String,
     var description: String,
-    var assignedTo: String
+    var assignedTo: String,
+    var status: String
 )
